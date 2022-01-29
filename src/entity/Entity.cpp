@@ -1,16 +1,14 @@
 #include "entity.hpp"
 
-Entity::Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model, bool gravity, float mass, bool isStatic) {
+Entity::Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model) {
 	for (size_t i = 0; i < object.getVertices()->size(); i++) {
 		object.getVertices()->at(i) = vec4(object.getVertices()->at(i), 1.f) * model;
 		object.getEstimate()->at(i) = vec4(object.getEstimate()->at(i), 1.f) * model;
 	}
-	this->isStatic = isStatic;
 	this->original = object;
 	this->actual = object;
 	this->color = color;
 	this->model = model;
-	this->gravity = gravity;
 	this->normalBuffer = new vector<vec3>(this->actual.getTriangles()->size() * 3);
 	this->vertexBuffer = new vector<vec3>(this->actual.getTriangles()->size() * 3);
 	this->info = {};
@@ -38,14 +36,6 @@ vec4* Entity::getColor() {
 	return &this->color;
 }
 
-bool Entity::isAffectedByGravity() {
-	return gravity;
-}
-
-bool Entity::hasCollision() {
-	return this->isStatic;
-}
-
 void Entity::update() {
 	const vector<vec3>* vertices = this->actual.getVertices();
 	const vector<vec3>* normals = this->actual.getNormals();
@@ -64,7 +54,6 @@ void Entity::update() {
 		normalBuffer->at((i * 3) + 2) = v3 + glm::normalize(p);
 	}
 }
-
 
 vector<vec3>* Entity::getRenderedVertices() {
 	return vertexBuffer;

@@ -97,18 +97,13 @@ private:
 	vector<vec3>* normalBuffer;
 	mat4 model;
 	vec4 color;
-	bool gravity;
-	bool isStatic;
 	OpenGLObjectInformation info;
 public:
-	Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model, bool gravity, float mass, bool isStatic);
+	Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model);
 	OpenGLObjectInformation getOpenGLInformation();
 	Object* getObject();
 	mat4* getModel();
 	vec4* getColor();
-	bool isAffectedByGravity();
-	bool hasCollision();
-	Mass getMass();
 	void update();
 	vector<vec3>* getRenderedVertices();
 	vector<vec3>* getRenderedNormals();

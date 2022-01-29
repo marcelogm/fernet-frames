@@ -20,19 +20,13 @@ Scene* FernetSceneFactory::build() {
 		provider.get("resources/bar.obj"),
 		shaders,
 		vec4(0.39f, 0.83f, 0.71f, 1.0f),
-		mat4(1),
-		true,
-		1.0f,
-		false
+		mat4(1)
 	);
 	Entity* floor = new Entity(
 		provider.get("resources/plane.obj"),
 		shaders,
 		vec4(1.0f, 1.0f, 1.0f, 1.0f),
-		glm::translate(mat4(1), vec3(0.0f, -2.0f, 0.0f)),
-		false,
-		0.0f,
-		true
+		glm::translate(mat4(1), vec3(0.0f, -2.0f, 0.0f))
 	);
 	vector<Entity*> entities = { floor, bar, b1, b2, b3, b4 };
 	Scene* scene = new Scene(
@@ -48,9 +42,6 @@ Entity* FernetSceneFactory::getDebugBox(vec3 position, float scale, vector<Shade
 		provider.get("resources/box.obj"),
 		shaders,
 		vec4(0.f, 0.10f, 0.20f, 1.0f),
-		glm::scale(glm::translate(mat4(1), position), vec3(scale)),
-		false,
-		1.0f,
-		false
+		glm::scale(glm::translate(mat4(1), position), vec3(scale))
 	);
 }
