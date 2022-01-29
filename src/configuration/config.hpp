@@ -24,29 +24,16 @@ typedef struct {
 	RenderMode mode;
 } OpenGLConfiguration;
 
-typedef struct {
-	float gravityModifier;
-	float windModifier;
-	int iterations;
-	float stiffness;
-	float bendability;
-	float step;
-	int substeps;
-	bool llt;
-} SimulationParams;
-
 class Configuration {
 private:
 	Configuration();
 	static Configuration* instance;
 	LightConfiguration light;
 	ViewportDimension viewport;
-	SimulationParams params;
 	OpenGLConfiguration openGL;
 public:
 	static Configuration* getInstance();
 	ViewportDimension* getViewport();
 	LightConfiguration* getLight();
-	SimulationParams* getSimulationParams();
 	OpenGLConfiguration* getOpenGLConfiguration();
 };
