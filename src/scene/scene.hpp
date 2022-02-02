@@ -23,14 +23,17 @@ public:
 
 class Scene {
 private:
-	vector<Entity*> entities;
+	vector<Entity*> fixedEntities;
+	vector<Entity*> debugEntities;
+	vector<Entity*> controlPointsEntities;
 	Renderer* renderer;
-	Camera* camera;
+	Camera* freeCamera;
+	Camera* pathCamera;
 	Function* fun;
-	vector<vec3> controls;
+	vector<vec3>* controls;
 	float t;
 public:
-	Scene(vector<Entity*> entities, Camera* camera, vector<vec3> controlPoints, Function* function);
+	Scene(vector<Entity*> fixed, vector<Entity*> debug, vector<Entity*> control, Camera* camera, Function* fun);
 	void render();
 	void updatePosition();
 	Camera* getCamera();
@@ -40,6 +43,6 @@ public:
 class FernetSceneFactory {
 public:
 	Scene* build();
-	vector<Entity*> getPath(vec3 a, vec3 b, vec3 c, vec3 d, vector<ShaderInfo> shaders);
-	Entity* getControlPoint(vec3 position, float scale, vector<ShaderInfo> shaders);
+	vector<Entity*> getDebug(vector<ShaderInfo> shaders);
+	Entity* getControlPoint(vector<ShaderInfo> shaders);
 };

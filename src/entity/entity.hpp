@@ -101,6 +101,7 @@ private:
 public:
 	Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model);
 	OpenGLObjectInformation getOpenGLInformation();
+	void setModel(mat4 model);
 	Object* getObject();
 	mat4* getModel();
 	vec4* getColor();

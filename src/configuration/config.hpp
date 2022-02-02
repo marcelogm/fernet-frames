@@ -1,7 +1,16 @@
 #pragma once
+#include <vector>
 #include <glm/glm.hpp>
 
+using std::vector;
 using glm::vec4;
+using glm::vec3;
+
+typedef struct {
+	int pathFraction;
+	bool isFollowing;
+	vector<vec3>* controlPoints;
+} KinematicConfiguration;
 
 typedef struct {
 	float width;
@@ -31,9 +40,11 @@ private:
 	LightConfiguration light;
 	ViewportDimension viewport;
 	OpenGLConfiguration openGL;
+	KinematicConfiguration kinematic;
 public:
 	static Configuration* getInstance();
 	ViewportDimension* getViewport();
 	LightConfiguration* getLight();
 	OpenGLConfiguration* getOpenGLConfiguration();
+	KinematicConfiguration* getKinematic();
 };

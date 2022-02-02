@@ -1,10 +1,7 @@
 #include "entity.hpp"
+#include "entity.hpp"
 
 Entity::Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model) {
-	for (size_t i = 0; i < object.getVertices()->size(); i++) {
-		object.getVertices()->at(i) = vec4(object.getVertices()->at(i), 1.f) * model;
-		object.getEstimate()->at(i) = vec4(object.getEstimate()->at(i), 1.f) * model;
-	}
 	this->original = object;
 	this->actual = object;
 	this->color = color;
@@ -24,6 +21,10 @@ OpenGLObjectInformation Entity::getOpenGLInformation() {
 	return this->info;
 }
 
+void Entity::setModel(mat4 model) {
+	this->model = model;
+}
+
 mat4* Entity::getModel() {
 	return &this->model;
 }
@@ -37,6 +38,10 @@ vec4* Entity::getColor() {
 }
 
 void Entity::update() {
+	for (size_t i = 0; i < original.getVertices()->size(); i++) {
+		actual.getVertices()->at(i) = vec4(original.getVertices()->at(i), 1.f) * model;
+		actual.getEstimate()->at(i) = vec4(original.getEstimate()->at(i), 1.f) * model;
+	}
 	const vector<vec3>* vertices = this->actual.getVertices();
 	const vector<vec3>* normals = this->actual.getNormals();
 	#pragma unroll

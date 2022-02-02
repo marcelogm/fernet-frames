@@ -1,5 +1,6 @@
 #include "gui.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <sstream>
 
 void GuiRenderer::render() {
 	auto const config = Configuration::getInstance();
@@ -7,6 +8,15 @@ void GuiRenderer::render() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+
+	ImGui::Begin("Camera", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Checkbox("Following the path", &config->getKinematic()->isFollowing);
+	ImGui::End();
+
+	auto controlPoints = config->getKinematic()->controlPoints;
+	for (auto i = 0; i < controlPoints->size(); i++) {
+		ImGui::SliderFloat3(("Control Point " + std::to_string(i)).c_str(), value_ptr(controlPoints->at(i)), -20, 20, "%.0f", ImGuiSliderFlags_None);
+	}
 
 	ImGui::Begin("Light", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::SliderFloat3("Position", value_ptr(config->getLight()->lightPosition), -20, 20, "%.0f", ImGuiSliderFlags_None);
