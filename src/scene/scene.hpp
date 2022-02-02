@@ -3,6 +3,7 @@
 #include "../configuration/config.hpp"
 #include "../camera/camera.hpp"
 #include "../entity/entity.hpp"
+#include "../math/math.hpp"
 
 using glm::mat4;
 using std::vector;
@@ -25,9 +26,13 @@ private:
 	vector<Entity*> entities;
 	Renderer* renderer;
 	Camera* camera;
+	Function* fun;
+	vector<vec3> controls;
+	float t;
 public:
-	Scene(vector<Entity*> entities, Camera* camera);
+	Scene(vector<Entity*> entities, Camera* camera, vector<vec3> controlPoints, Function* function);
 	void render();
+	void updatePosition();
 	Camera* getCamera();
 	vector<Entity*> getEntities();
 };
@@ -35,5 +40,6 @@ public:
 class FernetSceneFactory {
 public:
 	Scene* build();
-	Entity* getDebugBox(vec3 position, float scale, vector<ShaderInfo> shaders);
+	vector<Entity*> getPath(vec3 a, vec3 b, vec3 c, vec3 d, vector<ShaderInfo> shaders);
+	Entity* getControlPoint(vec3 position, float scale, vector<ShaderInfo> shaders);
 };

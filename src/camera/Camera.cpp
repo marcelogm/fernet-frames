@@ -1,4 +1,6 @@
 #include "camera.hpp"
+#include "camera.hpp"
+#include "camera.hpp"
 
 Camera::Camera(vec3 position, vec3 front, float yaw, float pitch) {
 	this->position = position;
@@ -18,6 +20,13 @@ Camera::Camera() {
 	this->update();
 }
 
+void Camera::set(vec3 position, vec3 front, vec3 right, vec3 up) {
+	this->position = position;
+	this->front = front;
+	this->right = right;
+	this->up = up;
+}
+
 void Camera::look(float yawOffset, float pitchOffset) {
 	pitch += pitchOffset;
 	yaw += yawOffset;
@@ -28,6 +37,10 @@ void Camera::look(float yawOffset, float pitchOffset) {
 		pitch = -89.0f;
 	}
 	this->update();
+}
+
+void Camera::lookAt(vec3 position, vec3 front, vec3 up) {
+	this->view = glm::lookAt(position, position + front, up);
 }
 
 void Camera::update() {

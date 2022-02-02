@@ -15,7 +15,9 @@ private:
 	float yaw;
 	float pitch;
 public:
+	void set(vec3, vec3, vec3, vec3);
 	void look(float, float);
+	void lookAt(vec3 position, vec3 front, vec3 up);
 	void update();
 	void goFoward(float);
 	void goBack(float);
