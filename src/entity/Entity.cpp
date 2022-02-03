@@ -1,5 +1,4 @@
 #include "entity.hpp"
-#include "entity.hpp"
 
 Entity::Entity(Object object, vector<ShaderInfo> shaders, vec4 color, mat4 model) {
 	this->original = object;

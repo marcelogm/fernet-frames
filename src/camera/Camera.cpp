@@ -1,6 +1,4 @@
 #include "camera.hpp"
-#include "camera.hpp"
-#include "camera.hpp"
 
 Camera::Camera(vec3 position, vec3 front, float yaw, float pitch) {
 	this->position = position;

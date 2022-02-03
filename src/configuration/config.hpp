@@ -10,6 +10,7 @@ typedef struct {
 	int pathFraction;
 	bool isFollowing;
 	vector<vec3>* controlPoints;
+	float velocity;
 } KinematicConfiguration;
 
 typedef struct {

@@ -1,6 +1,4 @@
 #include "gui.hpp"
-#include <glm/gtc/type_ptr.hpp>
-#include <sstream>
 
 void GuiRenderer::render() {
 	auto const config = Configuration::getInstance();
@@ -10,13 +8,26 @@ void GuiRenderer::render() {
 	ImGui::NewFrame();
 
 	ImGui::Begin("Camera", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Checkbox("Following the path", &config->getKinematic()->isFollowing);
+	ImGui::Checkbox("Following a path", &config->getKinematic()->isFollowing);
 	ImGui::End();
 
+	ImGui::Begin("Kinematic", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 	auto controlPoints = config->getKinematic()->controlPoints;
 	for (auto i = 0; i < controlPoints->size(); i++) {
-		ImGui::SliderFloat3(("Control Point " + std::to_string(i)).c_str(), value_ptr(controlPoints->at(i)), -20, 20, "%.0f", ImGuiSliderFlags_None);
+		int inverse = (controlPoints->size() - 1) - i;
+		ImGui::SliderFloat3(
+			("Control Point " + std::to_string(i + 1)).c_str(), 
+			value_ptr(controlPoints->at(inverse)), 
+			-100, 100, "%.0f", ImGuiSliderFlags_None
+		);
 	}
+	ImGui::SliderFloat("Velocity", &config->getKinematic()->velocity, 0, 10, "%.2f", ImGuiSliderFlags_Logarithmic);
+	ImGui::End();
+
+	ImGui::Begin("Info", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("Framerate: %.2f", Frametime::getInstance()->getFramerate());
+	ImGui::Text("Frametime: %.2f", Frametime::getInstance()->getFrametime());
+	ImGui::End();
 
 	ImGui::Begin("Light", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::SliderFloat3("Position", value_ptr(config->getLight()->lightPosition), -20, 20, "%.0f", ImGuiSliderFlags_None);

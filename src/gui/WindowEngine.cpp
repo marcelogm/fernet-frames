@@ -31,12 +31,11 @@ void WindowEngine::render() {
 WindowEngine::WindowEngine() {
 	const auto viewport = Configuration::getInstance()->getViewport();
 	glfwInit();
-	this->window = glfwCreateWindow(viewport->width, viewport->height, "PBD 1", NULL, NULL);
+	this->window = glfwCreateWindow(viewport->width, viewport->height, "Frenet Frames", NULL, NULL);
 	glfwSetKeyCallback(this->window, onKeyPress);
 	glfwSetCursorPosCallback(this->window, onMouseMove);
 	glfwSetWindowSizeCallback(this->window, onWindowSizeChange);
 	glfwMakeContextCurrent(window);
-	// glfwSwapInterval(0);
 	gl3wInit();
 	gui = new GuiRenderer(this->window);
 	command = CommandService::getInstance();

@@ -1,6 +1,4 @@
 #include "scene.hpp"
-#include "scene.hpp"
-#include "scene.hpp"
 
 Scene::Scene(vector<Entity*> fixed, vector<Entity*> debug, vector<Entity*> control, Camera* camera, Function* fun) {
 	this->fixedEntities = fixed;
@@ -14,50 +12,59 @@ Scene::Scene(vector<Entity*> fixed, vector<Entity*> debug, vector<Entity*> contr
 }
 
 void Scene::render() {
-	vector<vec3>* controlPoints = Configuration::getInstance()->getKinematic()->controlPoints;
+	KinematicConfiguration* kinematic = Configuration::getInstance()->getKinematic();
+	vector<vec3>* controlPoints = kinematic->controlPoints;
+	size_t debugPathCount = kinematic->pathFraction;
 
+	// 0.0f to 1.0f interval
+	this->updateStep(kinematic->velocity);
+	this->updatePathCamera(controlPoints);
+
+	// prepare opengl structures
 	this->renderer->clear();
     this->renderer->prepare();
 	
-	Camera* currentCamera;
-	if (Configuration::getInstance()->getKinematic()->isFollowing) {
-		this->updatePosition();
-		auto position = this->fun->apply(t, *controlPoints);
-		auto tangent = glm::normalize(this->fun->firstDerivative(t, *controlPoints));
-		auto normal = glm::normalize(this->fun->secondDerivative(t, *controlPoints));
-		auto binormal = glm::cross(tangent, normal);
-		currentCamera = pathCamera;
-		currentCamera->lookAt(position, tangent, binormal);
-	} else {
-		currentCamera = freeCamera;
+	// define current camera
+	Camera* currentCamera = kinematic->isFollowing ? pathCamera : freeCamera;
+
+	// render fixed entities
+	for (Entity* entity : this->fixedEntities) {
+		this->updateAndRender(entity, currentCamera);
 	}
 
+	// update control points position
 	for (auto i = 0; i < controlPoints->size(); i ++) {
 		auto entity = this->controlPointsEntities.at(i);
-		auto position = controlPoints->at(i);
-		entity->setModel(glm::scale(glm::translate(mat4(1), position), vec3(0.5f)));
-		entity->update();
-		this->renderer->render(entity, currentCamera, Configuration::getInstance()->getLight());
+		entity->setModel(glm::scale(glm::translate(mat4(1), controlPoints->at(i)), vec3(0.5f)));
+		this->updateAndRender(entity, currentCamera);
 	}
 
-	for (Entity* entity : this->fixedEntities) {
-		entity->update();
-		this->renderer->render(entity, currentCamera, Configuration::getInstance()->getLight());
-	}
-
-	for (auto i = 0; i < 100; i++) {
-		auto d = (float)i / 100;
-		auto position = this->fun->apply(d, *controlPoints);
+	// create path with boxes
+	for (auto i = 0; i < debugPathCount; i++) {
 		auto entity = this->debugEntities.at(i);
+		auto position = this->fun->apply((i / (float) debugPathCount), *controlPoints);
 		entity->setModel(glm::scale(glm::translate(mat4(1), position), vec3(0.2f)));
-		entity->update();
-		this->renderer->render(entity, currentCamera, Configuration::getInstance()->getLight());
+		this->updateAndRender(entity, currentCamera);
 	}
-
 }
 
-void Scene::updatePosition() {
-	this->t += 0.001f;
+void Scene::updatePathCamera(vector<vec3>* controlPoints) {
+	auto position = this->fun->apply(t, *controlPoints);
+	auto tangent = glm::normalize(this->fun->firstDerivative(t, *controlPoints));
+	auto normal = glm::normalize(this->fun->secondDerivative(t, *controlPoints));
+	auto binormal = glm::cross(tangent, normal);
+
+	pathCamera->lookAt(position, tangent, binormal);
+}
+
+void Scene::updateAndRender(Entity* entity, Camera* camera) {
+	entity->update();
+	renderer->render(entity, camera, Configuration::getInstance()->getLight());
+}
+
+void Scene::updateStep(float velocity) {
+	auto delta_t = Frametime::getInstance()->getDelta();
+	this->t += 0.05f * velocity * delta_t;
 	if (t > 1.0f) {
 		t = 0.0f;
 	}

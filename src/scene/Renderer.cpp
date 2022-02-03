@@ -1,5 +1,3 @@
-#pragma once
-
 #include "scene.hpp"
 
 void Renderer::clear() {

@@ -14,6 +14,7 @@ void Application::loop() {
 	while (this->window->shouldClose()) {
 		scene->render();
 		this->window->render();
+		Frametime::getInstance()->countFrame();
 	}
 }
 

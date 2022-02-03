@@ -1,4 +1,5 @@
 #pragma once
+#include "../scene/scene.hpp"
 #include "vgl.h"
 #include <imgui.h>
 #include <vector>

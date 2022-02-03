@@ -1,7 +1,4 @@
 #include "math.hpp"
-#include "math.hpp"
-#include "math.hpp"
-#include "math.hpp"
 
 vec3 BezierFunction::apply(float t, vector<vec3> control) {
 	return (pow(1.f - t, 3.f) * control.at(0)) +
