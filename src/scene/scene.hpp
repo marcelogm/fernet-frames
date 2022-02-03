@@ -32,8 +32,8 @@ private:
 	Camera* pathCamera;
 	Function* fun;
 	vector<vec3>* controls;
-	float t;
-	float last;
+	float currentStep;
+	float lastStep;
 public:
 	Scene(vector<Entity*> fixed, vector<Entity*> debug, vector<Entity*> control, Camera* camera, Function* fun);
 	void render();
@@ -41,9 +41,6 @@ public:
 	void updatePathCamera(vector<vec3>* controlPoints);
 	void updateAndRender(Entity* entity, Camera* camera);
 	void updateStep(float velocity, float distance, float current);
-	void updateStep(float velocity, float distance, vector<vec3>* controlPoints);
-	void updateStep(float velocity, vector<vec3>* controlPoints);
-	void updateStep(float velocity);
 	Camera* getCamera();
 	vector<Entity*> getEntities();
 };

@@ -24,8 +24,8 @@ Scene::Scene(vector<Entity*> fixed, vector<Entity*> debug, vector<Entity*> contr
 	this->freeCamera = camera;
 	this->renderer = new Renderer();
 	this->fun = fun;
-	this->t = 0.f;
-	this->last = 0.f;
+	this->currentStep = 0.f;
+	this->lastStep = 0.f;
 }
 
 void Scene::render() {
@@ -40,31 +40,34 @@ void Scene::render() {
 	// define current camera
 	Camera* currentCamera = kinematic->isFollowing ? pathCamera : freeCamera;
 
-	// create path with boxes
 	auto oldPosition = vec3();
-	auto distance = 0.0f;
-	auto current = 0.01f;
+	auto functionPathNorm = 0.0f;
+	auto stepNorm = 0.01f;
 
 	for (auto i = 0; i < debugPathCount; i++) {
 		auto entity = this->debugEntities.at(i);
-		auto into = (i / (float)debugPathCount);
-		auto position = this->fun->apply(into, *controlPoints);
+		auto step = (i / (float)debugPathCount);
+		auto position = this->fun->apply(step, *controlPoints);
+
+		// create path with boxes
 		entity->setModel(glm::scale(glm::translate(mat4(1), position), vec3(0.2f)));
 		this->updateAndRender(entity, currentCamera);
 
+		// calculate curve distance
 		if (i != 0) {
-			auto current_dist = glm::l2Norm(oldPosition - position);
-			distance += current_dist;
-			if (t > into && t < (into + 0.01f)) {
-				// ta aqui
-				current = current_dist;
+			auto currentStepNorm = glm::l2Norm(oldPosition - position);
+			functionPathNorm += currentStepNorm;
+
+			// current step distance
+			if (currentStep > step && currentStep < (step + (1.f / (float)debugPathCount))) {
+				stepNorm = currentStepNorm;
 			}
 		}
 		oldPosition = position;
 	}
 
 	// 0.0f to 1.0f interval
-	this->updateStep(kinematic->velocity, distance, current);
+	this->updateStep(kinematic->velocity, functionPathNorm, stepNorm);
 	this->updatePathCamera(controlPoints);
 	this->updateAndRender(this->character, currentCamera);
 	
@@ -82,9 +85,9 @@ void Scene::render() {
 }
 
 void Scene::updatePathCamera(vector<vec3>* controlPoints) {
-	auto position = this->fun->apply(t, *controlPoints);
-	auto tangent = glm::normalize(this->fun->firstDerivative(t, *controlPoints));
-	auto normal = glm::normalize(this->fun->secondDerivative(t, *controlPoints));
+	auto position = this->fun->apply(currentStep, *controlPoints);
+	auto tangent = glm::normalize(this->fun->firstDerivative(currentStep, *controlPoints));
+	auto normal = glm::normalize(this->fun->secondDerivative(currentStep, *controlPoints));
 	auto binormal = glm::cross(tangent, normal);
 
 	pathCamera->lookAt(position, tangent, binormal);
@@ -98,14 +101,15 @@ void Scene::updateAndRender(Entity* entity, Camera* camera) {
 
 void Scene::updateStep(float velocity, float distance, float current) {
 	auto delta_t = Frametime::getInstance()->getDelta();
-	auto step = 0.01f * velocity;
-	auto contribution = ((current * 100.f) / distance);
-	this->t = last + (step * (1.0f / contribution));
-	this->last = this->t;
+	auto step = 0.01f * velocity * delta_t;
 
-	if (t > 1.0f) {
-		t = 0.0f;
-		last = 0.0f;
+	auto contribution = ((current * 100.f) / distance);
+	this->currentStep = lastStep + (step * (1.0f / contribution));
+	this->lastStep = this->currentStep;
+
+	if (currentStep > 1.0f) {
+		currentStep = 0.0f;
+		lastStep = 0.0f;
 	}
 }
 
