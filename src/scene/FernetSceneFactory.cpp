@@ -13,10 +13,10 @@ Scene* FernetSceneFactory::build() {
 
 	KinematicConfiguration* config = Configuration::getInstance()->getKinematic();
 	vector<Entity*> control = vector<Entity*>();
-	config->controlPoints->push_back(vec3(-12.f, 15.0f, -5.f));
-	config->controlPoints->push_back(vec3(3.f, 0.f, -7.f));
-	config->controlPoints->push_back(vec3(-12.f, 2.f, 12.f));
-	config->controlPoints->push_back(vec3(4.f, 0.f, 8.f));
+	config->controlPoints->push_back(vec3(0.f, 0.f, 0.f));
+	config->controlPoints->push_back(vec3(1.f, 1.f, 1.f));
+	config->controlPoints->push_back(vec3(2.f, -8.f, 2.f));
+	config->controlPoints->push_back(vec3(25.f, 25.f, 25.f));
 	for (vec3 contrlPoint : *config->controlPoints) {
 		control.push_back(getControlPoint());
 	}

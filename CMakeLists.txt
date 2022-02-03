@@ -51,10 +51,12 @@ add_library(fernet-frames
 			"src/scene/Scene.cpp"
 			"src/scene/Renderer.cpp"
 			"src/scene/FernetSceneFactory.cpp"
+			"src/scene/Frametime.cpp"
 			"src/gui/GuiRenderer.cpp" 
 			"src/gui/WindowEngine.cpp" 
 			"src/gui/CommandService.cpp"
-			"src/gui/CommandStrategy.cpp")
+			"src/gui/CommandStrategy.cpp"
+			"src/math/BezierFunction.cpp" )
 			
 find_package(OpenMP)
 if (OPENMP_FOUND)
